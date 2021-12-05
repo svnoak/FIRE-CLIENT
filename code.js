@@ -1,39 +1,96 @@
-function loadFile(event) {
+let uploadedImages =  [];
 
-    console.log("loading file")
+// PREVENTING DEFAULT SUBMISSION FOR FORM
+let form = document.getElementById("file-upload");
+form.addEventListener("submit", function(event){
+    event.preventDefault();
+});
+
+
+// ADDING NEW BATCH
+document.getElementById("add-batch").addEventListener("click", newBatch);
+
+// DRAG THEATER
+document.addEventListener('dragstart', function(event) {
+    var target = getLI( event.target );
+    dragging = target;
+    event.dataTransfer.setData('text/plain', null);
+    event.dataTransfer.setDragImage(self.dragging,0,0);
+});
+
+document.addEventListener('dragover', function(event) {
+    event.preventDefault();
+    var target = getLI( event.target );
+    var bounding = target.getBoundingClientRect()
+    var offset = bounding.y + (bounding.height/2);
+    if ( event.clientY - offset > 0 ) {
+       	target.style['border-bottom'] = 'solid 4px blue';
+        target.style['border-top'] = '';
+    } else {
+        target.style['border-top'] = 'solid 4px blue';
+        target.style['border-bottom'] = '';
+    }
+});
+
+document.addEventListener('dragleave', function(event) {
+    var target = getLI( event.target );
+    target.style['border-bottom'] = '';
+    target.style['border-top'] = '';
+});
+
+document.addEventListener('drop', function(event) {
+    event.preventDefault();
+    var target = getLI( event.target );
+    if ( target.style['border-bottom'] !== '' ) {
+        target.style['border-bottom'] = '';
+        target.parentNode.insertBefore(dragging, event.target.nextSibling);
+    } else {
+        target.style['border-top'] = '';
+        target.parentNode.insertBefore(dragging, event.target);
+    }
+});
+
+let renameFilesBtn = document.getElementById("rename-files");
+renameFilesBtn.addEventListener("click", renameFiles);
+
+
+function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
 
+    console.log("LOADING");
+    let files = [];
     list.innerHTML = "";
-
     for( let i = 0; i < event.target.files.length; i++ ){
+        files.push(event.target.files[i]);        
+
         let listItem = document.createElement("li");
         listItem.draggable = true;
+
         let image = document.createElement("img");
         image.src = URL.createObjectURL(event.target.files[i]);
         image.className = "image";
+        image.name = event.target.files[i].name;
 
         let deleteBtn = document.createElement("button");
         deleteBtn.type = "button";
         deleteBtn.innerText = "delete";
         deleteBtn.addEventListener("click", function(event){
             list.removeChild(event.target.parentNode);
+            let name = event.target.parentNode.children[0].name;
+            uploadedImages.forEach( batch => {
+                let index = batch.indexOf(name);
+                if ( index > -1 ){
+                    batch.splice(index, 1);
+                }
+            })
         });
 
-       /*  let colorPicker = document.createElement("input");
-        colorPicker.type = "color";
-        colorPicker.value = "00000000"; */
-
-        listItem.append( image, /* colorPicker, */ deleteBtn);
+        listItem.append( image, deleteBtn);
         list.append(listItem);
-    };
+    }
+    uploadedImages.push(files);
 };
 
-let form = document.getElementById("file-upload");
-form.addEventListener("submit", function(event){
-    event.preventDefault();
-});
-
-document.getElementById("add-batch").addEventListener("click", newBatch);
 
 function newBatch(){
     let form = document.getElementById("file-upload");
@@ -74,45 +131,6 @@ function newBatch(){
 
 var dragging = null;
 
-document.addEventListener('dragstart', function(event) {
-    var target = getLI( event.target );
-    dragging = target;
-    event.dataTransfer.setData('text/plain', null);
-    event.dataTransfer.setDragImage(self.dragging,0,0);
-});
-
-document.addEventListener('dragover', function(event) {
-    event.preventDefault();
-    var target = getLI( event.target );
-    var bounding = target.getBoundingClientRect()
-    var offset = bounding.y + (bounding.height/2);
-    if ( event.clientY - offset > 0 ) {
-       	target.style['border-bottom'] = 'solid 4px blue';
-        target.style['border-top'] = '';
-    } else {
-        target.style['border-top'] = 'solid 4px blue';
-        target.style['border-bottom'] = '';
-    }
-});
-
-document.addEventListener('dragleave', function(event) {
-    var target = getLI( event.target );
-    target.style['border-bottom'] = '';
-    target.style['border-top'] = '';
-});
-
-document.addEventListener('drop', function(event) {
-    event.preventDefault();
-    var target = getLI( event.target );
-    if ( target.style['border-bottom'] !== '' ) {
-        target.style['border-bottom'] = '';
-        target.parentNode.insertBefore(dragging, event.target.nextSibling);
-    } else {
-        target.style['border-top'] = '';
-        target.parentNode.insertBefore(dragging, event.target);
-    }
-});
-
 function getLI( target ) {
     while ( target.nodeName.toLowerCase() != 'li' && target.nodeName.toLowerCase() != 'body' ) {
         target = target.parentNode;
@@ -124,31 +142,58 @@ function getLI( target ) {
     }
 }
 
-let renameFilesBtn = document.getElementById("rename-files");
-renameFilesBtn.addEventListener("click", renameFiles);
+async function renameFiles(){
 
-function renameFiles(){
+    console.log("RENAMING");
     let batches = document.querySelectorAll(".batch");
+
+    let formData = new FormData();
+    let formArr = [];
     
-    uploadList = [];
-
-    batches.forEach( batch => {
-
-        let imageBatch = {};
+    for( let i = 0; i < batches.length; i++){
+        let formObj = {};
+        let batch = batches[i];
 
         let name = batch.children[0].children[1].value;
         let suffix = batch.children[0].children[2].value;
         let list = batch.children[1];
         let listItems = list.children;
 
-        imageBatch.name = name;
-        imageBatch.suffix = suffix;
-        imageBatch.files = [];
+        imageNames = [];
 
-        for( let i = 0; i < listItems.length; i++){
-            let image = listItems[i].children[0].src;
-            imageBatch.files.push(image);
+        for(let i = 0; i < listItems.length; i++){
+            let img = listItems[i].children[0];
+            imageNames.push(img.name);
         }
-        uploadList.push(imageBatch);
+
+        formData.append(`${i}-files`, `${name}-${suffix}`);
+
+        let sortedFiles = sortArrayBy(uploadedImages[i], imageNames);
+        sortedFiles.forEach( file => {
+            formData.append(`${i}-files[]`, file);
+        })
+    }
+    upload(formData);
+
+}
+
+function upload(formData){
+    let url = "http://localhost:7000";
+    fetch(new Request(url,
+        {
+            method: 'POST',
+            body: formData
+        }))
+        .then( response => response.json())
+        .then(console.log)
+        .catch(console.log);  
+}
+
+function sortArrayBy(sortArr, sourceArr){
+    let sortedArr = [];
+    sortArr.forEach( item => {
+        let index = sourceArr.indexOf( item.name );
+        sortedArr.splice(index, 0, item);
     })
+    return sortedArr;
 }
