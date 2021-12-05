@@ -72,3 +72,7 @@ input[type=number] {
 .buttons{
     display: flex;
 }
+
+#downloadBtn{
+    display: none;
+}

@@ -3,6 +3,7 @@ let uploadedImages =  [];
 // PREVENTING DEFAULT SUBMISSION FOR FORM
 let form = document.getElementById("file-upload");
 form.addEventListener("submit", function(event){
+    console.log("IT RUNS!");
     event.preventDefault();
 });
 
@@ -52,7 +53,6 @@ document.addEventListener('drop', function(event) {
 
 let renameFilesBtn = document.getElementById("rename-files");
 renameFilesBtn.addEventListener("click", renameFiles);
-
 
 function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
@@ -142,16 +142,15 @@ function getLI( target ) {
     }
 }
 
-async function renameFiles(){
+async function renameFiles(event){
+    event.preventDefault;
 
     console.log("RENAMING");
     let batches = document.querySelectorAll(".batch");
 
     let formData = new FormData();
-    let formArr = [];
     
     for( let i = 0; i < batches.length; i++){
-        let formObj = {};
         let batch = batches[i];
 
         let name = batch.children[0].children[1].value;
@@ -174,7 +173,6 @@ async function renameFiles(){
         })
     }
     upload(formData);
-
 }
 
 function upload(formData){
@@ -185,10 +183,9 @@ function upload(formData){
             body: formData
         }))
         .then( response => response.json())
-        .then(console.log)
-        .catch(console.log);  
-}
-
+        .then(data => setDownloadBtnValue(data))
+        .catch(console.log);
+    }
 function sortArrayBy(sortArr, sourceArr){
     let sortedArr = [];
     sortArr.forEach( item => {
@@ -196,4 +193,23 @@ function sortArrayBy(sortArr, sourceArr){
         sortedArr.splice(index, 0, item);
     })
     return sortedArr;
+}
+
+function setDownloadBtnValue(data){
+    let value = data["value"];
+    let downloadBtn = document.querySelector("#downloadBtn");
+    downloadBtn.value = value;
+    downloadBtn.style.display = "block";
+
+    downloadBtn.addEventListener("click", ()=> {
+        window.location.href=value;
+        let url = "http://localhost:7000";
+        fetch(new Request(url,
+            {
+            method: 'GET'
+            }
+        ))
+        .then( response => response.json())
+        .then(console.log)
+    })
 }

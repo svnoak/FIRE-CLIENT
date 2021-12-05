@@ -11,12 +11,13 @@
 <body>
     <h1>File Renaming</h1>
     <main>
-        <form enctype="multipart/form-data" id="file-upload" method="post">
+        <button type="button" id=downloadBtn>Download</button>
+        <form enctype="multipart/form-data" id="file-upload" onsubmit="return false;">
         <div class="batch">
             <div class="setting">
-                <input id="upload-1" type="file" name="file[]" multiple onchange="loadFile(event)"/>
-                <input type="text" name="prefix" id="prefix" placeholder="New Name">
-                <input type="text" name="suffix" id="suffix" placeholder="Suffix">
+                <input id="upload-1" type="file" name="file[]" multiple onchange="loadFile(event)" required/>
+                <input type="text" name="prefix" id="prefix" placeholder="New Name" required>
+                <input type="text" name="suffix" id="suffix" placeholder="Suffix" required>
             </div>
             <ul id="files-1"></ul>
         </div>
@@ -25,7 +26,6 @@
             <button type="button" id="add-batch">Add batch</button>
             <button type="button" id="rename-files">Rename files</button>
         </div>
-        
     </main>
 </body>
 </html>
