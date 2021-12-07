@@ -80,17 +80,10 @@ function loadFile(event) {
         let deleteBtn = document.createElement("button");
         deleteBtn.type = "button";
         deleteBtn.innerText = "X";
-        deleteBtn.className = "delete-btn"
+        deleteBtn.className = "delete-file-btn"
         deleteBtn.addEventListener("click", function(event){
-            let name = event.target.parentNode.children[0].name;
-            for (let [k, batch] of uploadedImages.entries()){
-                let index = -1;
-                for (let [i, file] of batch.entries()) {
-                       if( file.name == name ) index = i;
-                }
-                if (index > -1) batch.splice(index, 1);
-                if ( batch.length == 0 ) uploadedImages.splice(k, 1);
-            }
+            let item = event.target.parentNode.children[0];
+            removeFile(item);
             list.removeChild(event.target.parentNode);
             if( hasNoChildren(list) ) list.classList.remove("no-after");
         });
@@ -137,9 +130,19 @@ function newBatch(){
 
     let list = document.createElement("ul");
     listLength = document.querySelectorAll("ul").length + 1;
-    list.id = `files-${listLength}`;  
+    list.id = `files-${listLength}`;
+    
+    let btnContainer = document.createElement("div");
+    btnContainer.className = "btn-container";
 
-    batch.append(settings, list);
+    let removeBatchBtn = document.createElement("button");
+    removeBatchBtn.innerText = "X";
+    removeBatchBtn.className = "delete-batch-btn";
+    removeBatchBtn.addEventListener("click", removeBatch);
+
+    btnContainer.append(removeBatchBtn);
+
+    batch.append(btnContainer, settings, list);
     form.append(batch);
 }
 
@@ -200,7 +203,8 @@ function upload(formData){
         .then( response => response.json())
         .then(data => setDownloadBtnValue(data))
         .catch(console.log);
-    }
+}
+
 function sortArrayBy(sortArr, sourceArr){
     let sortedArr = [];
     sortArr.forEach( item => {
@@ -236,4 +240,26 @@ function hasNoChildren(element){
 function toggleOptions(){
     let options = document.getElementById("batch-options");
     options.classList.toggle("visible");
+}
+
+function removeBatch(event){
+    let batch = event.target.parentElement.parentElement;
+    let nodes = batch.children[2].childNodes;
+    nodes.forEach( listItem => {
+        let file = listItem.children[0];
+        removeFile(file);
+    })
+    batch.remove();
+}
+
+function removeFile(file){
+    let name = file.name;
+    for (let [k, batch] of uploadedImages.entries()){
+        let index = -1;
+        for (let [i, file] of batch.entries()) {
+                if( file.name == name ) index = i;
+        }
+        if (index > -1) batch.splice(index, 1);
+        if ( batch.length == 0 ) uploadedImages.splice(k, 1);
+    }
 }

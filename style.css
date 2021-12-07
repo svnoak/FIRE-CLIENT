@@ -80,7 +80,8 @@ li {
     
 }
 
-li > button.delete-btn{
+li > .delete-file-btn,
+.batch > .btn-container > .delete-batch-btn{
     background-color: rgba(255,255,255,0.5);
     width: 20px;
     border: none;
@@ -92,6 +93,7 @@ li > button.delete-btn{
     top: 5px;
     right: 20px;
     border-radius: 100px;
+    cursor: pointer;
 }
 
 .image {
@@ -167,4 +169,14 @@ input[type=number] {
     height: 100%;
     opacity: 1;
     display: flex;
+}
+
+.batch > .btn-container{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.batch > .btn-container > .delete-batch-btn{
+    cursor: pointer;
+    position: unset;
 }
