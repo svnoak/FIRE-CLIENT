@@ -47,6 +47,11 @@ button{
     display: flex;
 }
 
+.settings{
+    display: flex;
+    flex-direction: column;
+}
+
 ul::after{
     text-align: center;
     width: 100%;
@@ -134,12 +139,14 @@ input[type=number] {
 }
 
 #batch-options{
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 0px;
     width: 500px;
+    opacity: 0;
+    transition: .2s ease;
 }
 
 #batch-options > div{
@@ -152,8 +159,12 @@ input[type=number] {
     margin-bottom: 10px;
 }
 
-
-
 #downloadBtn{
     display: none;
+}
+
+#batch-options.visible{
+    height: 100%;
+    opacity: 1;
+    display: flex;
 }

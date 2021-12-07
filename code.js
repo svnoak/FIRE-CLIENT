@@ -55,6 +55,9 @@ document.addEventListener('drop', function(event) {
 let renameFilesBtn = document.getElementById("rename-files");
 renameFilesBtn.addEventListener("click", renameFiles);
 
+let optionsToggle = document.querySelector("#batch-buttons > .options");
+optionsToggle.addEventListener("click", toggleOptions);
+
 function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
 
@@ -228,4 +231,9 @@ function setDownloadBtnValue(data){
 
 function hasNoChildren(element){
     return element.children.length > 0 ? false : true;
+}
+
+function toggleOptions(){
+    let options = document.getElementById("batch-options");
+    options.classList.toggle("visible");
 }
