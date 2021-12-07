@@ -1,12 +1,13 @@
 let uploadedImages =  [];
 
+window.onbeforeunload = function() {return "really leave now?"}
+
 // PREVENTING DEFAULT SUBMISSION FOR FORM
 let form = document.getElementById("file-upload");
 form.addEventListener("submit", function(event){
     console.log("IT RUNS!");
     event.preventDefault();
 });
-
 
 // ADDING NEW BATCH
 document.getElementById("add-batch").addEventListener("click", newBatch);
@@ -57,11 +58,13 @@ renameFilesBtn.addEventListener("click", renameFiles);
 function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
 
+    list.className = "no-after";
+
     console.log("LOADING");
     let files = [];
     list.innerHTML = "";
     for( let i = 0; i < event.target.files.length; i++ ){
-        files.push(event.target.files[i]);        
+        files.push(event.target.files[i]);
 
         let listItem = document.createElement("li");
         listItem.draggable = true;
@@ -73,31 +76,26 @@ function loadFile(event) {
 
         let deleteBtn = document.createElement("button");
         deleteBtn.type = "button";
-        deleteBtn.innerText = "delete";
+        deleteBtn.innerText = "X";
+        deleteBtn.className = "delete-btn"
         deleteBtn.addEventListener("click", function(event){
             let name = event.target.parentNode.children[0].name;
-            console.log(name);
-            console.log(uploadedImages);
             for (let [k, batch] of uploadedImages.entries()){
                 let index = -1;
                 for (let [i, file] of batch.entries()) {
                        if( file.name == name ) index = i;
                 }
                 if (index > -1) batch.splice(index, 1);
-                console.log(batch.length);
-                console.log(k);
                 if ( batch.length == 0 ) uploadedImages.splice(k, 1);
             }
-            console.log(uploadedImages);
             list.removeChild(event.target.parentNode);
+            if( hasNoChildren(list) ) list.classList.remove("no-after");
         });
-
         listItem.append( image, deleteBtn);
         list.append(listItem);
     }
     uploadedImages.push(files);
 };
-
 
 function newBatch(){
     let form = document.getElementById("file-upload");
@@ -220,4 +218,8 @@ function setDownloadBtnValue(data){
         .then( response => response.json())
         .then(console.log)
     })
+}
+
+function hasNoChildren(element){
+    return element.children.length > 0 ? false : true;
 }
