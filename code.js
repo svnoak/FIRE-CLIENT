@@ -91,8 +91,8 @@ function loadFile(event) {
         list.append(listItem);
     }
     let batchName = list.id;
-    console.log(batchName);
-    uploadedImages.push(files);
+    uploadedImages[batchName] = [];
+    uploadedImages[batchName].push(files);
 };
 
 function newBatch(){
@@ -186,9 +186,10 @@ async function renameFiles(event){
 
         formData.append(`${i}-files`, `${name}-${suffix}`);
 
-        let sortedFiles = sortArrayBy(uploadedImages[i], imageNames);
+        let sortedFiles = sortArrayBy(uploadedImages[`files-${i+1}`][0], imageNames);
         console.log(sortedFiles);
         sortedFiles.forEach( file => {
+            console.log(file);
             formData.append(`${i}-files[]`, file);
         })
     }
@@ -256,7 +257,7 @@ function removeBatch(event){
 
 function removeFile(file){
     let name = file.name;
-    for (let [k, batch] of uploadedImages.entries()){
+    for (let [k, batch] of uploadedImages.entries()){ // NEEDS FIXING!
         let index = -1;
         for (let [i, file] of batch.entries()) {
                 if( file.name == name ) index = i;
