@@ -13,8 +13,23 @@
     <main>
         <button type="button" id=downloadBtn>Download</button>
         <div class="buttons">
-            <button type="button" id="add-batch">Add batch</button>
+            <div id="batch-buttons">
+                <button type="button" id="add-batch">Add batch</button>
+                <div class="options">Options</div>
+            </div>
             <button type="button" id="rename-files">Rename files</button>
+        </div>
+        <div id="batch-options">
+            <div>
+                <p>Batch Settings</p>
+                <input type="text" placeholder="Name">
+                <input type="text" placeholder="Suffix">
+            </div>
+            <div>
+                <p>Upload CSV</p>
+                <input type="file">
+            </div>
+            
         </div>
         <form enctype="multipart/form-data" id="file-upload" onsubmit="return false;">
         <div class="batch">
