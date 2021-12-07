@@ -100,6 +100,10 @@ function loadFile(event) {
 function newBatch(){
     let form = document.getElementById("file-upload");
 
+    let batchName = document.getElementById("batch-name").value;
+    let batchSuffix = document.getElementById("batch-suffix").value;
+    let csv = document.getElementById("batch-csv").value;
+
     let batch = document.createElement("div");
     batch.className = "batch";
     
@@ -117,12 +121,14 @@ function newBatch(){
     prefix.name = "prefix";
     prefix.id = "prefix";
     prefix.placeholder = "New Name";
+    prefix.value = batchName;
 
     let suffix = document.createElement("input");
     suffix.type = "text";
     suffix.name = "suffix";
     suffix.id = "suffix";
     suffix.placeholder = "Suffix";
+    suffix.value = batchSuffix;
 
     settings.append(fileUpload, prefix, suffix);
 
