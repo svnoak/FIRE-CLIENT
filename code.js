@@ -1,4 +1,4 @@
-let uploadedImages =  [];
+let uploadedImages = [];
 
 window.onbeforeunload = function() {return "really leave now?"}
 
@@ -90,6 +90,8 @@ function loadFile(event) {
         listItem.append( image, deleteBtn);
         list.append(listItem);
     }
+    let batchName = list.id;
+    console.log(batchName);
     uploadedImages.push(files);
 };
 
@@ -170,9 +172,9 @@ async function renameFiles(event){
     for( let i = 0; i < batches.length; i++){
         let batch = batches[i];
 
-        let name = batch.children[0].children[1].value;
-        let suffix = batch.children[0].children[2].value;
-        let list = batch.children[1];
+        let name = batch.children[1].children[1].value;
+        let suffix = batch.children[1].children[2].value;
+        let list = batch.children[2];
         let listItems = list.children;
 
         imageNames = [];
