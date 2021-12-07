@@ -75,14 +75,21 @@ function loadFile(event) {
         deleteBtn.type = "button";
         deleteBtn.innerText = "delete";
         deleteBtn.addEventListener("click", function(event){
-            list.removeChild(event.target.parentNode);
             let name = event.target.parentNode.children[0].name;
-            uploadedImages.forEach( batch => {
-                let index = batch.indexOf(name);
-                if ( index > -1 ){
-                    batch.splice(index, 1);
+            console.log(name);
+            console.log(uploadedImages);
+            for (let [k, batch] of uploadedImages.entries()){
+                let index = -1;
+                for (let [i, file] of batch.entries()) {
+                       if( file.name == name ) index = i;
                 }
-            })
+                if (index > -1) batch.splice(index, 1);
+                console.log(batch.length);
+                console.log(k);
+                if ( batch.length == 0 ) uploadedImages.splice(k, 1);
+            }
+            console.log(uploadedImages);
+            list.removeChild(event.target.parentNode);
         });
 
         listItem.append( image, deleteBtn);
@@ -168,6 +175,7 @@ async function renameFiles(event){
         formData.append(`${i}-files`, `${name}-${suffix}`);
 
         let sortedFiles = sortArrayBy(uploadedImages[i], imageNames);
+        console.log(sortedFiles);
         sortedFiles.forEach( file => {
             formData.append(`${i}-files[]`, file);
         })
