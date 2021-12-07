@@ -45,6 +45,12 @@ button{
     border-radius: 5px;
     border: 2px solid grey;
     display: flex;
+    padding: 0px;
+}
+
+.settings{
+    display: flex;
+    flex-direction: column;
 }
 
 ul::after{
@@ -75,7 +81,8 @@ li {
     
 }
 
-li > button.delete-btn{
+li > .delete-file-btn,
+.batch > .btn-container > .delete-batch-btn{
     background-color: rgba(255,255,255,0.5);
     width: 20px;
     border: none;
@@ -87,6 +94,7 @@ li > button.delete-btn{
     top: 5px;
     right: 20px;
     border-radius: 100px;
+    cursor: pointer;
 }
 
 .image {
@@ -112,8 +120,64 @@ input[type=number] {
 
 .buttons{
     display: flex;
+    width: 500px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.buttons > button{
+    cursor: pointer;
+}
+
+#batch-buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 125px;
+}
+
+#batch-buttons > .options{
+    cursor:pointer;
+    display: flex;
+}
+
+#batch-options{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 0px;
+    width: 500px;
+    opacity: 0;
+    transition: .2s ease;
+}
+
+#batch-options > div{
+    width: 300px;
+}
+
+#batch-options > div:first-child{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
 }
 
 #downloadBtn{
     display: none;
+}
+
+#batch-options.visible{
+    height: 100%;
+    opacity: 1;
+    display: flex;
+}
+
+.batch > .btn-container{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.batch > .btn-container > .delete-batch-btn{
+    cursor: pointer;
+    position: unset;
 }

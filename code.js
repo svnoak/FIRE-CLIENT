@@ -1,4 +1,4 @@
-let uploadedImages =  [];
+let uploadedImages = [];
 
 window.onbeforeunload = function() {return "really leave now?"}
 
@@ -55,6 +55,9 @@ document.addEventListener('drop', function(event) {
 let renameFilesBtn = document.getElementById("rename-files");
 renameFilesBtn.addEventListener("click", renameFiles);
 
+let optionsToggle = document.querySelector("#batch-buttons > .options");
+optionsToggle.addEventListener("click", toggleOptions);
+
 function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
 
@@ -77,28 +80,27 @@ function loadFile(event) {
         let deleteBtn = document.createElement("button");
         deleteBtn.type = "button";
         deleteBtn.innerText = "X";
-        deleteBtn.className = "delete-btn"
+        deleteBtn.className = "delete-file-btn"
         deleteBtn.addEventListener("click", function(event){
-            let name = event.target.parentNode.children[0].name;
-            for (let [k, batch] of uploadedImages.entries()){
-                let index = -1;
-                for (let [i, file] of batch.entries()) {
-                       if( file.name == name ) index = i;
-                }
-                if (index > -1) batch.splice(index, 1);
-                if ( batch.length == 0 ) uploadedImages.splice(k, 1);
-            }
+            let item = event.target.parentNode.children[0];
+            removeFile(item);
             list.removeChild(event.target.parentNode);
             if( hasNoChildren(list) ) list.classList.remove("no-after");
         });
         listItem.append( image, deleteBtn);
         list.append(listItem);
     }
+    let batchName = list.id;
+    console.log(batchName);
     uploadedImages.push(files);
 };
 
 function newBatch(){
     let form = document.getElementById("file-upload");
+
+    let batchName = document.getElementById("batch-name").value;
+    let batchSuffix = document.getElementById("batch-suffix").value;
+    let csv = document.getElementById("batch-csv").value;
 
     let batch = document.createElement("div");
     batch.className = "batch";
@@ -117,20 +119,32 @@ function newBatch(){
     prefix.name = "prefix";
     prefix.id = "prefix";
     prefix.placeholder = "New Name";
+    prefix.value = batchName;
 
     let suffix = document.createElement("input");
     suffix.type = "text";
     suffix.name = "suffix";
     suffix.id = "suffix";
     suffix.placeholder = "Suffix";
+    suffix.value = batchSuffix;
 
     settings.append(fileUpload, prefix, suffix);
 
     let list = document.createElement("ul");
     listLength = document.querySelectorAll("ul").length + 1;
-    list.id = `files-${listLength}`;  
+    list.id = `files-${listLength}`;
+    
+    let btnContainer = document.createElement("div");
+    btnContainer.className = "btn-container";
 
-    batch.append(settings, list);
+    let removeBatchBtn = document.createElement("button");
+    removeBatchBtn.innerText = "X";
+    removeBatchBtn.className = "delete-batch-btn";
+    removeBatchBtn.addEventListener("click", removeBatch);
+
+    btnContainer.append(removeBatchBtn);
+
+    batch.append(btnContainer, settings, list);
     form.append(batch);
 }
 
@@ -158,9 +172,9 @@ async function renameFiles(event){
     for( let i = 0; i < batches.length; i++){
         let batch = batches[i];
 
-        let name = batch.children[0].children[1].value;
-        let suffix = batch.children[0].children[2].value;
-        let list = batch.children[1];
+        let name = batch.children[1].children[1].value;
+        let suffix = batch.children[1].children[2].value;
+        let list = batch.children[2];
         let listItems = list.children;
 
         imageNames = [];
@@ -191,7 +205,8 @@ function upload(formData){
         .then( response => response.json())
         .then(data => setDownloadBtnValue(data))
         .catch(console.log);
-    }
+}
+
 function sortArrayBy(sortArr, sourceArr){
     let sortedArr = [];
     sortArr.forEach( item => {
@@ -222,4 +237,31 @@ function setDownloadBtnValue(data){
 
 function hasNoChildren(element){
     return element.children.length > 0 ? false : true;
+}
+
+function toggleOptions(){
+    let options = document.getElementById("batch-options");
+    options.classList.toggle("visible");
+}
+
+function removeBatch(event){
+    let batch = event.target.parentElement.parentElement;
+    let nodes = batch.children[2].childNodes;
+    nodes.forEach( listItem => {
+        let file = listItem.children[0];
+        removeFile(file);
+    })
+    batch.remove();
+}
+
+function removeFile(file){
+    let name = file.name;
+    for (let [k, batch] of uploadedImages.entries()){
+        let index = -1;
+        for (let [i, file] of batch.entries()) {
+                if( file.name == name ) index = i;
+        }
+        if (index > -1) batch.splice(index, 1);
+        if ( batch.length == 0 ) uploadedImages.splice(k, 1);
+    }
 }
