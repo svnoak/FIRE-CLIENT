@@ -28,6 +28,7 @@ form > input{
 
 button{
     width: 60px;
+    cursor: pointer;
 }
 
 .batch{
@@ -150,6 +151,7 @@ input[type=number] {
     width: 500px;
     opacity: 0;
     transition: .2s ease;
+    transition-delay: 1s;
 }
 
 #batch-options > div{
@@ -180,4 +182,8 @@ input[type=number] {
 .batch > .btn-container > .delete-batch-btn{
     cursor: pointer;
     position: unset;
+}
+
+.dragging{
+    opacity: .5;
 }

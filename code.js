@@ -1,6 +1,15 @@
 let uploadedImages = [];
 
-window.onbeforeunload = function() {return "really leave now?"}
+window.addEventListener("dragover",function(e){
+    e = e || event;
+    e.preventDefault();
+  },false);
+  window.addEventListener("drop",function(e){
+    e = e || event;
+    e.preventDefault();
+  },false);
+
+//window.onbeforeunload = function() {return "really leave now?"}
 
 // PREVENTING DEFAULT SUBMISSION FOR FORM
 let form = document.getElementById("file-upload");
@@ -12,45 +21,22 @@ form.addEventListener("submit", function(event){
 // ADDING NEW BATCH
 document.getElementById("add-batch").addEventListener("click", newBatch);
 
-// DRAG THEATER
-document.addEventListener('dragstart', function(event) {
-    var target = getLI( event.target );
-    dragging = target;
-    event.dataTransfer.setData('text/plain', null);
-    event.dataTransfer.setDragImage(self.dragging,0,0);
+/* 
+const draggables = document.querySelectorAll('.draggable');
+const containers = document.querySelectorAll('.container');
+
+draggables.forEach( draggable => {
+    draggable.addEventListener('dragstart', () => {
+        console.log("dragstart");
+        draggable.classList.add("dragging");
+    } );
 });
 
-document.addEventListener('dragover', function(event) {
-    event.preventDefault();
-    var target = getLI( event.target );
-    var bounding = target.getBoundingClientRect()
-    var offset = bounding.y + (bounding.height/2);
-    if ( event.clientY - offset > 0 ) {
-       	target.style['border-bottom'] = 'solid 4px blue';
-        target.style['border-top'] = '';
-    } else {
-        target.style['border-top'] = 'solid 4px blue';
-        target.style['border-bottom'] = '';
-    }
-});
-
-document.addEventListener('dragleave', function(event) {
-    var target = getLI( event.target );
-    target.style['border-bottom'] = '';
-    target.style['border-top'] = '';
-});
-
-document.addEventListener('drop', function(event) {
-    event.preventDefault();
-    var target = getLI( event.target );
-    if ( target.style['border-bottom'] !== '' ) {
-        target.style['border-bottom'] = '';
-        target.parentNode.insertBefore(dragging, event.target.nextSibling);
-    } else {
-        target.style['border-top'] = '';
-        target.parentNode.insertBefore(dragging, event.target);
-    }
-});
+draggables.forEach( draggable => {
+    draggable.addEventListener('dragend', () => {
+        draggable.classList.remove("dragging");
+    } );
+}) */
 
 let renameFilesBtn = document.getElementById("rename-files");
 renameFilesBtn.addEventListener("click", renameFiles);
@@ -61,7 +47,7 @@ optionsToggle.addEventListener("click", toggleOptions);
 function loadFile(event) {
 	let list = event.target.parentElement.parentElement.lastElementChild;
 
-    list.className = "no-after";
+    list.classList.add("no-after");
 
     console.log("LOADING");
     let files = [];
@@ -71,6 +57,16 @@ function loadFile(event) {
 
         let listItem = document.createElement("li");
         listItem.draggable = true;
+        listItem.className = "draggable";
+        listItem.dataset.batch = list.id;
+
+        /* listItem.addEventListener('dragstart', (event) => {
+            event.target.classList.add("dragging");
+        })
+
+        listItem.addEventListener('dragend', (event) => {
+            event.target.classList.remove("dragging");
+        }) */
 
         let image = document.createElement("img");
         image.src = URL.createObjectURL(event.target.files[i]);
@@ -133,6 +129,18 @@ function newBatch(){
     let list = document.createElement("ul");
     listLength = document.querySelectorAll("ul").length + 1;
     list.id = `files-${listLength}`;
+    list.className = "container";
+
+   //let sortable = Sortable.create(list);
+
+    /* list.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        //const afterElement = getDragAfterElement(event.target, event.clientX);
+        const draggable = document.querySelector('.draggable');
+        if( draggable.dataset.batch == list.id ){
+            list.appendChild(draggable);
+        }
+    }) */
     
     let btnContainer = document.createElement("div");
     btnContainer.className = "btn-container";
@@ -148,18 +156,18 @@ function newBatch(){
     form.append(batch);
 }
 
-var dragging = null;
+/* function getDragAfterElement(container, x){
+    const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
 
-function getLI( target ) {
-    while ( target.nodeName.toLowerCase() != 'li' && target.nodeName.toLowerCase() != 'body' ) {
-        target = target.parentNode;
-    }
-    if ( target.nodeName.toLowerCase() == 'body' ) {
-        return false;
-    } else {
-        return target;
-    }
-}
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = box.y - box.top - box.height / 2;
+        console.log(closest);
+        if( offset < 0 && offset > closest.offset){
+            return { "offset": offset, "element": child }
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element
+} */
 
 async function renameFiles(event){
     event.preventDefault;
