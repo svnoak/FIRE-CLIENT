@@ -19,7 +19,7 @@ form.addEventListener("submit", function(event){
 });
 
 // ADDING NEW BATCH
-document.getElementById("add-batch").addEventListener("click", newBatch);
+document.getElementById("add-batch").addEventListener("click", () => newBatch());
 
 /* 
 const draggables = document.querySelectorAll('.draggable');
@@ -91,10 +91,11 @@ function loadFile(event) {
     uploadedImages[batchName].push(files);
 };
 
-function newBatch(){
+function newBatch(batchName = ""){
     let form = document.getElementById("file-upload");
 
-    let batchName = document.getElementById("batch-name").value;
+    if (! batchName) batchName = document.getElementById("batch-name").value;
+
     let batchSuffix = document.getElementById("batch-suffix").value;
     let csv = document.getElementById("batch-csv").value;
 
@@ -131,7 +132,7 @@ function newBatch(){
     list.id = `files-${listLength}`;
     list.className = "container";
 
-   //let sortable = Sortable.create(list);
+   let sortable = Sortable.create(list);
 
     /* list.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -273,4 +274,23 @@ function removeFile(file){
         if (index > -1) batch.splice(index, 1);
         if ( batch.length == 0 ) uploadedImages.splice(k, 1);
     }
+}
+
+function uploadCSV(){
+    var fileUpload = document.getElementById("batch-csv");
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    let namesArray = e.target.result.split("\n");
+                    namesArray.forEach( name => newBatch(name) );
+                }
+                reader.readAsText(fileUpload.files[0]);
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid CSV file.");
+        }
 }
