@@ -44,16 +44,33 @@ renameFilesBtn.addEventListener("click", renameFiles);
 let optionsToggle = document.querySelector("#batch-buttons > .options");
 optionsToggle.addEventListener("click", toggleOptions);
 
-function loadFile(event) {
-	let list = event.target.parentElement.parentElement.lastElementChild;
+function dropHandler(ev) {
+    console.log(ev.target.children.length);
+        console.log('File(s) dropped');
+      
+        // Prevent default behavior (Prevent file from being opened)
+        ev.preventDefault();
+
+        loadFile(ev, "dataTransfer");
+        //if (ev.dataTransfer.items)
+}
+
+function loadFile(event, atr = "target") {
+    let imagesArray = event[atr].files;
+    let list;
+    if ( atr == "target"){
+        list = event.target.parentElement.parentElement.lastElementChild;
+    } else {
+        list = event.target;
+    }
 
     list.classList.add("no-after");
 
     console.log("LOADING");
     let files = [];
     list.innerHTML = "";
-    for( let i = 0; i < event.target.files.length; i++ ){
-        files.push(event.target.files[i]);
+    for( let i = 0; i < imagesArray.length; i++ ){
+        files.push(imagesArray[i]);
 
         let listItem = document.createElement("li");
         listItem.draggable = true;
@@ -69,9 +86,9 @@ function loadFile(event) {
         }) */
 
         let image = document.createElement("img");
-        image.src = URL.createObjectURL(event.target.files[i]);
+        image.src = URL.createObjectURL(imagesArray[i]);
         image.className = "image";
-        image.name = event.target.files[i].name;
+        image.name = imagesArray[i].name;
 
         let deleteBtn = document.createElement("button");
         deleteBtn.type = "button";
@@ -82,6 +99,7 @@ function loadFile(event) {
             removeFile(item);
             list.removeChild(event.target.parentNode);
             if( hasNoChildren(list) ) list.classList.remove("no-after");
+            delete uploadedImages[list.id];
         });
         listItem.append( image, deleteBtn);
         list.append(listItem);
@@ -131,6 +149,7 @@ function newBatch(batchName = ""){
     listLength = document.querySelectorAll("ul").length + 1;
     list.id = `files-${listLength}`;
     list.className = "container";
+    list.addEventListener("drop", dropHandler);
 
    let sortable = Sortable.create(list);
 
@@ -194,11 +213,11 @@ async function renameFiles(event){
         }
 
         formData.append(`${i}-files`, `${name}-${suffix}`);
-
+        console.log(`files-${i+1}`);
         let sortedFiles = sortArrayBy(uploadedImages[`files-${i+1}`][0], imageNames);
-        console.log(sortedFiles);
+        //console.log(sortedFiles);
         sortedFiles.forEach( file => {
-            console.log(file);
+            //console.log(file);
             formData.append(`${i}-files[]`, file);
         })
     }
