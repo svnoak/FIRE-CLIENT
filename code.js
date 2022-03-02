@@ -45,17 +45,23 @@ let optionsToggle = document.querySelector("#batch-buttons > .options");
 optionsToggle.addEventListener("click", toggleOptions);
 
 function dropHandler(ev) {
-    console.log(ev.target.children.length);
+
+    let parentElement = ev.target;
         console.log('File(s) dropped');
       
         // Prevent default behavior (Prevent file from being opened)
         ev.preventDefault();
 
+        console.log(parentElement.classList);
+        //console.log(parentElement.childNodes.length);
+
+    if( parentElement.classList.length == 1 ) {
         loadFile(ev, "dataTransfer");
-        //if (ev.dataTransfer.items)
+    }
 }
 
 function loadFile(event, atr = "target") {
+    
     let imagesArray = event[atr].files;
     let list;
     if ( atr == "target"){
@@ -69,6 +75,8 @@ function loadFile(event, atr = "target") {
     console.log("LOADING");
     let files = [];
     list.innerHTML = "";
+
+    console.log(list);
     for( let i = 0; i < imagesArray.length; i++ ){
         files.push(imagesArray[i]);
 
@@ -76,14 +84,6 @@ function loadFile(event, atr = "target") {
         listItem.draggable = true;
         listItem.className = "draggable";
         listItem.dataset.batch = list.id;
-
-        /* listItem.addEventListener('dragstart', (event) => {
-            event.target.classList.add("dragging");
-        })
-
-        listItem.addEventListener('dragend', (event) => {
-            event.target.classList.remove("dragging");
-        }) */
 
         let image = document.createElement("img");
         image.src = URL.createObjectURL(imagesArray[i]);
@@ -149,7 +149,7 @@ function newBatch(batchName = ""){
     listLength = document.querySelectorAll("ul").length + 1;
     list.id = `files-${listLength}`;
     list.className = "container";
-    list.addEventListener("drop", dropHandler);
+    list.addEventListener("drop", (event, that) => dropHandler(event, that));
 
    let sortable = Sortable.create(list);
 
