@@ -90,10 +90,9 @@ function loadFile(event, atr = "target") {
         image.className = "image";
         image.name = imagesArray[i].name;
 
-        let deleteBtn = document.createElement("button");
+        let deleteBtn = document.createElement("i");
         deleteBtn.type = "button";
-        deleteBtn.innerText = "X";
-        deleteBtn.className = "delete-file-btn"
+        deleteBtn.className = 'gg-close';
         deleteBtn.addEventListener("click", function(event){
             let item = event.target.parentNode.children[0];
             removeFile(item);
@@ -165,9 +164,8 @@ function newBatch(batchName = ""){
     let btnContainer = document.createElement("div");
     btnContainer.className = "btn-container";
 
-    let removeBatchBtn = document.createElement("button");
-    removeBatchBtn.innerText = "X";
-    removeBatchBtn.className = "delete-batch-btn";
+    let removeBatchBtn = document.createElement("i");
+    removeBatchBtn.className = "gg-close";
     removeBatchBtn.addEventListener("click", removeBatch);
 
     btnContainer.append(removeBatchBtn);
