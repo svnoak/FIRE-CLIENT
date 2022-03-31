@@ -91,8 +91,7 @@ function loadFile(event, atr = "target") {
         image.name = imagesArray[i].name;
 
         let deleteBtn = document.createElement("i");
-        deleteBtn.type = "button";
-        deleteBtn.className = 'gg-close';
+        deleteBtn.className = 'fa-solid fa-xmark';
         deleteBtn.addEventListener("click", function(event){
             let item = event.target.parentNode.children[0];
             removeFile(item);
@@ -150,6 +149,11 @@ function newBatch(batchName = ""){
     list.className = "container";
     list.addEventListener("drop", (event, that) => dropHandler(event, that));
 
+/*     let uploadIcon = document.createElement("i");
+    uploadIcon.className = 'gg-software-upload';
+
+    list.append(uploadIcon); */
+
    let sortable = Sortable.create(list);
 
     /* list.addEventListener('dragover', (event) => {
@@ -165,7 +169,7 @@ function newBatch(batchName = ""){
     btnContainer.className = "btn-container";
 
     let removeBatchBtn = document.createElement("i");
-    removeBatchBtn.className = "gg-close";
+    removeBatchBtn.className = "fa-solid fa-xmark";
     removeBatchBtn.addEventListener("click", removeBatch);
 
     btnContainer.append(removeBatchBtn);
