@@ -28,7 +28,7 @@ export default {
 <template>
 <main>
   <Navbar/>
-  <div class="flex flex-col justify-center align-items-center">
+  <div class="flex flex-col justify-center items-center">
     <Batch />
   </div>
 </main>
