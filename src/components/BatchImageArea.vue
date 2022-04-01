@@ -23,7 +23,6 @@ export default {
                 let files = e.dataTransfer.files
                 for( let file of files ){
                     let url = URL.createObjectURL(file);
-                    console.log(typeof(url));
                     this.files.push(url);
                 }
             }
@@ -39,16 +38,10 @@ export default {
         },
         onDragOverItem(e){
             this.newImgIndex = this.files.findIndex( file => file.toString() == e.target.src );
-        },
-        onDragEnd(e){
             let src = this.srcImgIndex;
             let dest = this.newImgIndex;
             [this.files[src], this.files[dest]] = [this.files[dest], this.files[src]];
-        },
-    },
-    watchers: {
-        files(){
-            console.log(this.files);
+            this.srcImgIndex = this.newImgIndex;
         }
     }
 }
@@ -59,7 +52,7 @@ export default {
         @dragover.prevent="onDragOver"
         @dragleave="onDragLeave"
         @drop.prevent="onDrop"
-        :id="id"
+        
         >
     <p v-if="!dropped">{{dragInfo}}</p>
     <li 
