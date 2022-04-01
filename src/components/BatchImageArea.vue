@@ -40,6 +40,16 @@ export default {
         onDragOverItem(e){
             this.newImgIndex = this.files.findIndex( file => file.toString() == e.target.src );
         },
+        onDragEnd(e){
+            let src = this.srcImgIndex;
+            let dest = this.newImgIndex;
+            [this.files[src], this.files[dest]] = [this.files[dest], this.files[src]];
+        },
+    },
+    watchers: {
+        files(){
+            console.log(this.files);
+        }
     }
 }
 </script>
@@ -59,6 +69,7 @@ export default {
     draggable="true"
     @dragover.prevent="onDragOverItem"
     @dragstart="onDragStart"
+    @dragend="onDragEnd"
     :index=index
     >
         <BatchImage :src="file" />
