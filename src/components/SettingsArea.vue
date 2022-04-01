@@ -14,8 +14,8 @@ export default {
 }
 </script>
 
-<template>
-<div class="min-h-full w-80 bg-base-100 fixed px-10 py-5">
+<template class="col-span-1">
+<div class="h-screen bg-base-100 fixed px-10 py-5">
     <h1 class="font-bold text-5xl text-center">FiRe</h1>
     <div class="divider"></div>
     <h2 class="text-3xl text-center">Settings</h2>
