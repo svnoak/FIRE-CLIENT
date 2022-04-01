@@ -1,34 +1,19 @@
 <script>
-import Navbar from './components/Navbar.vue';
 import Batch from './components/Batch.vue';
+import SettingsArea from './components/SettingsArea.vue';
 
 export default {
   components: {
-    Navbar,
+    SettingsArea,
     Batch
-  },
-  data() {
-    return {
-      count: 0
-    }
-  },
-  methods: {
-    increment() {
-      this.count++
-    }
-  },
-  watch: {
-    count(newCount) {
-      console.log(`New count is ${newCount}`)
-    }
   }
 }
 </script>
 
 <template>
-<main>
-  <Navbar/>
-  <div class="flex flex-col justify-center items-center">
+<main class="bg-base-200 flex min-h-screen">
+  <SettingsArea />
+  <div class="flex flex-col justify-center items-center grow">
     <Batch />
   </div>
 </main>

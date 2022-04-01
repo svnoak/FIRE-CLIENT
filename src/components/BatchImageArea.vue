@@ -13,7 +13,6 @@ export default {
             dragInfo: "Drag files here",
             srcImgIndex: -1,
             newImgIndex: -1
-
         }
     },
     methods: {
