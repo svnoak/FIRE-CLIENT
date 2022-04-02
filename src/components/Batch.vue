@@ -32,7 +32,6 @@ export default {
             this.$emit('changeSuffix', {id: this.batchId, suffix: this.suffixInput});
         },
         onDrop(e) {
-            console.log(this.srcBatch);
             if( !this.srcBatch ){
                 if( e.target.tagName == "UL" || e.target.tagName == "P" ){
                     this.dropped = true;
@@ -40,7 +39,7 @@ export default {
                     if( files.length ){
                         for ( let i = 0; i < files.length; i++ ){
                             let url = URL.createObjectURL(files[i]);
-                            this.files.push({url: url, index: i});
+                            this.files.push({url: url});
                         }
                     }
                 }
@@ -72,15 +71,13 @@ export default {
             this.srcImgIndex = -1;
             this.newImgIndex = -1;
             this.$emit("handleBatch", false);
+        },
+        removeImage(e){
+            let img = e.target.nextSibling.src;
+            let index = this.files.findIndex( file => file.url.toString() == img );
+            this.files.splice(index, 1);
         }
-    },
-    /* watch: {
-        dragInfo(){
-            this.files 
-            ? this.dragInfo = "Drag files here"
-            : this.dragInfo = "Drop files here"
-        }
-    } */
+    }
 }
 </script>
 
@@ -125,9 +122,7 @@ export default {
         :index=index
         
     >
-        <button class="block absolute h-0 m-0">
-            <ion-icon name="close-circle-outline" class="cursor-pointer relative"></ion-icon>
-        </button>
+        <ion-icon name="close-circle-outline" class="block absolute m-1 cursor-pointer" @click="removeImage"></ion-icon>
         <BatchImage :src="file.url" />
     </li>
     </ul>
