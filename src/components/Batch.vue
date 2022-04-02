@@ -6,7 +6,7 @@ export default {
         BatchImage
     },
     props: ["id", "title", "name", "suffix", "srcBatch"],
-    emits: ['handleBatch'],
+    emits: ["handleBatch"],
     data(){
         return{
             batchId: this.id,
@@ -35,6 +35,7 @@ export default {
             if( e.target.tagName == "UL" || e.target.tagName == "P" ){
                 this.dropped = true;
                 let files = e.dataTransfer.files
+                console.log(files);
                 if( files.length > 1 ){
                     for ( let i = 0; i < files.length; i++ ){
                         let url = URL.createObjectURL(files[i]);
@@ -57,7 +58,7 @@ export default {
         onDragStart(e){
             this.srcImgIndex = this.files.findIndex( file => file.url.toString() == e.target.src );
             this.imgSrc = e.target.src;
-            this.$emit('handleBatch', this.batchId);
+            this.$emit("handleBatch", this.batchId);
         },
         onDragOverItem(e){
                 if( this.batchId == this.srcBatch){

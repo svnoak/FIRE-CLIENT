@@ -1,16 +1,11 @@
 <script>
 export default {
-  emits:['batch'],
+  emits:['addBatch'],
   data(){
     return{
       batch: {name: "", suffix: ""}
     }
   },
-  methods:{
-    addBatch(){
-      this.$emit('addBatch', this.batch);
-    }
-  }
 }
 </script>
 
@@ -26,6 +21,6 @@ export default {
         <label class="label">Suffix for this batch</label>
         <input type="text" v-model="batch.suffix" placeholder="Filesuffix" id="batch-suffix" class="input input-sm input-bordered w-full max-w-xs">
     </form>
-    <button @click="addBatch" class="btn btn-block mt-3">Add Batch</button>
+    <button @click="$emit('addBatch', this.batch)" class="btn btn-block mt-3">Add Batch</button>
   </div>
 </template>

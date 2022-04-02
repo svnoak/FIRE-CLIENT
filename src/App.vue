@@ -49,7 +49,7 @@ export default {
     :srcBatch = this.srcBatch
     @change-name="changeName"
     @change-suffix="changeSuffix"
-    @handle-Batch="handleBatch"
+    @handle-batch="handleBatch"
         />
   </div>
 </main>
