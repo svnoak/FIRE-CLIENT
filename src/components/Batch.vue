@@ -5,11 +5,10 @@ export default {
     components: {
         BatchImage
     },
-    props: ["id", "title", "name", "suffix", "srcBatch"],
-    emits: ["handleBatch"],
+    props: ["key", "id", "title", "name", "suffix", "srcBatch"],
+    emits: ["handleBatch", "id"],
     data(){
         return{
-            batchId: this.id,
             nameInput: "",
             suffixInput: "",
             dropped: false,
@@ -25,11 +24,11 @@ export default {
     methods: {
         changeName(e){
             this.nameInput = e.target.value;
-            this.$emit('changeName', {id: this.batchId, name: this.nameInput});
+            this.$emit('changeName', {id: this.id, name: this.nameInput});
         },
         changeSuffix(e){
             this.suffixInput = e.target.value;
-            this.$emit('changeSuffix', {id: this.batchId, suffix: this.suffixInput});
+            this.$emit('changeSuffix', {id: this.id, suffix: this.suffixInput});
         },
         onDrop(e) {
             if( !this.srcBatch ){
@@ -84,7 +83,16 @@ export default {
 <template>
     <div :id='"batch-"+id' class="card bg-base-100 shadow-xl m-4 w-9/12">
         <div class="card-body">
-            <h2 class="card-title">#{{id}}</h2>
+            <div class="flex justify-between items-center">
+                <h2 class="card-title">#{{id}}</h2>
+                <ion-icon 
+                name="close-circle-outline" 
+                class="m-1 relative bottom-6 h-6 w-6 cursor-pointer" 
+                @click="$emit('removeBatch', this.id)" 
+                aria-label="Remove batch">
+                </ion-icon>
+            </div>
+            
             <input type="text"
             :value=name
             placeholder="Filename" 

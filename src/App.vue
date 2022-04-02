@@ -11,6 +11,7 @@ export default {
   emits: ['handleBatch'],
   data(){
     return {
+      lastId: 0,
       batchList: [],
       srcBatch: false
     }
@@ -18,11 +19,13 @@ export default {
   methods:{
     addBatch(e){
       let batch = {
-        id: this.batchList.length + 1,
+        id: this.lastId+1,
         name: e.name,
         suffix: e.suffix
       }
-      this.batchList.push(batch)
+      this.batchList.push(batch);
+      this.lastId++;
+
     },
     changeName(e){
       this.batchList.find(batch => batch.id == e.id).name = e.name;
@@ -32,8 +35,11 @@ export default {
     },
     handleBatch(e){
       this.srcBatch = e;
+    },
+    removeBatch(e){
+      let index = this.batchList.findIndex( batch => batch.id == e );
+      this.batchList.splice(index, 1);
     }
-    
   }
 }
 </script>
@@ -52,6 +58,7 @@ export default {
     @change-name="changeName"
     @change-suffix="changeSuffix"
     @handle-batch="handleBatch"
+    @remove-batch="removeBatch"
         />
   </div>
 </main>
