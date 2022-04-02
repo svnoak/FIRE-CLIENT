@@ -11,7 +11,7 @@ export default {
   emits: ['handleBatch'],
   data(){
     return {
-      lastId: 0,
+      lastId: 1,
       batchList: [],
       srcBatch: false
     }
@@ -19,7 +19,7 @@ export default {
   methods:{
     addBatch(e){
       let batch = {
-        id: this.lastId+1,
+        id: this.setBatchId(),
         name: e.name,
         suffix: e.suffix
       }
@@ -39,6 +39,10 @@ export default {
     removeBatch(e){
       let index = this.batchList.findIndex( batch => batch.id == e );
       this.batchList.splice(index, 1);
+    },
+    setBatchId(){
+      if(this.batchList.length < 1) this.lastId = 1;
+      return this.lastId;
     }
   }
 }
