@@ -7,10 +7,11 @@ export default {
     SettingsArea,
     Batch
   },
+  props: ['handleBatch'],
   data(){
     return {
       batchList: [],
-      srcBatch: ""
+      srcBatch: false
     }
   },
   methods:{

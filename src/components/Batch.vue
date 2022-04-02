@@ -32,21 +32,20 @@ export default {
             this.$emit('changeSuffix', {id: this.batchId, suffix: this.suffixInput});
         },
         onDrop(e) {
-            if( e.target.tagName == "UL" || e.target.tagName == "P" ){
-                this.dropped = true;
-                let files = e.dataTransfer.files
-                console.log(files);
-                if( files.length > 1 ){
-                    for ( let i = 0; i < files.length; i++ ){
-                        let url = URL.createObjectURL(files[i]);
-                        this.files.push({url: url, index: i});
-                    }
-                } else{
-                    let exists = this.files.findIndex( file => file.url.toString() == this.imgSrc );
-                    if ( !exists ){
-                        this.files.push(this.imgSrc);
+            console.log(this.srcBatch);
+            if( !this.srcBatch ){
+                if( e.target.tagName == "UL" || e.target.tagName == "P" ){
+                    this.dropped = true;
+                    let files = e.dataTransfer.files
+                    if( files.length ){
+                        for ( let i = 0; i < files.length; i++ ){
+                            let url = URL.createObjectURL(files[i]);
+                            this.files.push({url: url, index: i});
+                        }
                     }
                 }
+            } else{
+                this.dragInfo = "Drag files here";
             }
         },
         onDragOver(e) {
@@ -72,8 +71,16 @@ export default {
         onDragEnd(){
             this.srcImgIndex = -1;
             this.newImgIndex = -1;
+            this.$emit("handleBatch", false);
         }
-    }
+    },
+    /* watch: {
+        dragInfo(){
+            this.files 
+            ? this.dragInfo = "Drag files here"
+            : this.dragInfo = "Drop files here"
+        }
+    } */
 }
 </script>
 
