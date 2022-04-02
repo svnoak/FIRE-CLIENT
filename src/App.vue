@@ -40,6 +40,9 @@ export default {
       let index = this.batchList.findIndex( batch => batch.id == e );
       this.batchList.splice(index, 1);
     },
+    deleteAll(){
+      this.batchList = [];
+    },
     setBatchId(){
       if(this.batchList.length < 1) this.lastId = 1;
       return this.lastId;
@@ -50,7 +53,12 @@ export default {
 
 <template>
 <main class="bg-base-200 grid grid-cols-4 min-h-screen">
-  <SettingsArea @add-batch="addBatch" class="col-span-1"/>
+  <SettingsArea 
+    @add-batch="addBatch" 
+    @delete-all="deleteAll"
+    class="col-span-1"
+    />
+
   <div class="col-start-2 col-end-5 flex flex-col justify-center items-center">
     <Batch v-for="(batch, index) in batchList"
     :key = index 
