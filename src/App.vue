@@ -9,7 +9,8 @@ export default {
   },
   data(){
     return {
-      batchList: []
+      batchList: [],
+      srcBatch: ""
     }
   },
   methods:{
@@ -26,6 +27,9 @@ export default {
     },
     changeSuffix(e){
       this.batchList.find(batch => batch.id == e.id).suffix = e.suffix;
+    },
+    handleBatch(e){
+      this.srcBatch = e;
     }
     
   }
@@ -36,15 +40,17 @@ export default {
 <main class="bg-base-200 grid grid-cols-4 min-h-screen">
   <SettingsArea @add-batch="addBatch" class="col-span-1"/>
   <div class="col-start-2 col-end-5 flex flex-col justify-center items-center">
-    <Batch v-for="(batch, index) in batchList" 
+    <Batch v-for="(batch, index) in batchList"
     :key = index 
     :title = batch.id 
     :name = batch.name
     :suffix = batch.suffix
     :id = batch.id
+    :srcBatch = this.srcBatch
     @change-name="changeName"
     @change-suffix="changeSuffix"
-    />
+    @handle-Batch="handleBatch"
+        />
   </div>
 </main>
 </template>

@@ -5,24 +5,34 @@ export default {
     components: {
         BatchImage
     },
+    props: ['batch'],
     data() {
         return{
             dropped: false,
             files: [],
-            source: "",
             dragInfo: "Drag files here",
             srcImgIndex: -1,
-            newImgIndex: -1
+            newImgIndex: -1,
+            imgSrc: "",
+            batchId: this.batch,
+            srcBatch: ""
         }
     },
     methods: {
         onDrop(e) {
-            if( this.files.length < 1 ){
+            if( e.target.tagName == "UL" || e.target.tagName == "P" ){
                 this.dropped = true;
                 let files = e.dataTransfer.files
-                for( let file of files ){
-                    let url = URL.createObjectURL(file);
-                    this.files.push(url);
+                if( files.length > 1 ){
+                    for ( let i = 0; i < files.length; i++ ){
+                        let url = URL.createObjectURL(files[i]);
+                        this.files.push({url: url, index: i});
+                    }
+                } else{
+                    let exists = this.files.findIndex( file => file.url.toString() == this.imgSrc );
+                    if ( !exists ){
+                        this.files.push(this.imgSrc);
+                    }
                 }
             }
         },
@@ -33,38 +43,50 @@ export default {
             this.dragInfo = "Drag files here";
         },
         onDragStart(e){
-            this.srcImgIndex = this.files.findIndex( file => file.toString() == e.target.src );
+            this.srcImgIndex = this.files.findIndex( file => file.url.toString() == e.target.src );
+            this.imgSrc = e.target.src;
+            this.$emit('handleBatchId', this.batchId);
         },
         onDragOverItem(e){
-            this.newImgIndex = this.files.findIndex( file => file.toString() == e.target.src );
-            let src = this.srcImgIndex;
-            let dest = this.newImgIndex;
-            [this.files[src], this.files[dest]] = [this.files[dest], this.files[src]];
-            this.srcImgIndex = this.newImgIndex;
+/*             if( this.batchId == e.target.dataset.batch ){
+                this.newImgIndex = this.files.findIndex( file => file.url.toString() == e.target.src );
+                let src = this.srcImgIndex;
+                let dest = this.newImgIndex;
+                [this.files[src], this.files[dest]] = [this.files[dest], this.files[src]];
+                this.srcImgIndex = this.newImgIndex;
+            } */
+        },
+        onDragEnd(e){
+            this.srcImgIndex = -1;
+            this.newImgIndex = -1;
         }
-    }
+    },
 }
 </script>
 <template>
     <ul
         class="bg-dotted h-32 rounded border-dashed border-gray-300 border-2 flex"
         @dragover.prevent="onDragOver"
-        @dragleave="onDragLeave"
+        @dragleave.prevent="onDragLeave"
         @drop.prevent="onDrop"
-        
+        :data-batch=batch
+        draggable="false"
         >
     <p v-if="!dropped">{{dragInfo}}</p>
     <li 
-    v-for="(file, index) in files" 
-    :key="index"
-    class="h-full"
-    draggable="true"
-    @dragover.prevent="onDragOverItem"
-    @dragstart="onDragStart"
-    @dragend="onDragEnd"
-    :index=index
+        v-for="(file, index) in files" 
+        :key="index"
+        class="h-full"
+        draggable="true"
+        @dragover="onDragOverItem"
+        @dragstart="onDragStart"
+        @dragend="onDragEnd"
+        @drag="onDrag"
+        :index=index
+        :data-batch="batch"
+        :ref="batch"
     >
-        <BatchImage :src="file" />
+        <BatchImage :src="file.url" :data-batch=batch />
     </li>
     </ul>
 </template>

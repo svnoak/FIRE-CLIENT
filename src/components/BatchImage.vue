@@ -1,7 +1,7 @@
 <script>
 export default {
     props:{
-        src: String
+        src: String,
     }
 }
 </script>
@@ -10,5 +10,6 @@ export default {
     <img 
     :src="src" 
     alt="product-image"
-    class="h-full border border-slate-300">
+    class="h-full border border-slate-300"
+    >
 </template>
