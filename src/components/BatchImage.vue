@@ -10,6 +10,6 @@ export default {
     <img 
     :src="src" 
     alt="product-image"
-    class="h-full border border-slate-300"
+    class="h-full border border-slate-300 cursor-move object-top object-cover"
     >
 </template>

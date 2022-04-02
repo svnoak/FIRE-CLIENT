@@ -116,14 +116,18 @@ export default {
     <li 
         v-for="(file, index) in files" 
         :key="index"
-        class="h-full"
+        class="h-full w-fit flex justify-end items-start cursor-move"
         draggable="true"
         @dragover="onDragOverItem"
         @dragstart="onDragStart"
         @dragend="onDragEnd"
         @drag="onDrag"
         :index=index
+        
     >
+        <button class="block absolute h-0 m-0">
+            <ion-icon name="close-circle-outline" class="cursor-pointer relative"></ion-icon>
+        </button>
         <BatchImage :src="file.url" />
     </li>
     </ul>

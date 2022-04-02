@@ -3,11 +3,12 @@ import Batch from './components/Batch.vue';
 import SettingsArea from './components/SettingsArea.vue';
 
 export default {
+  inheritAttrs: false,
   components: {
     SettingsArea,
     Batch
   },
-  props: ['handleBatch'],
+  emits: ['handleBatch'],
   data(){
     return {
       batchList: [],
